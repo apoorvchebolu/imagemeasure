@@ -19,9 +19,9 @@
 			$(function() {
 				// alert("init");
 			    canvas = $('#can');
-			    ctx = canvas.find("2d");
-			    w = canvas.width;
-			    h = canvas.height;
+			    ctx = canvas[0].getContext("2d");
+			    w = canvas[0].width;
+			    h = canvas[0].height;
 
 			    // alert("width: " + w);
 
@@ -47,11 +47,19 @@
 			    	// alert("out");
 			    	findxy('out', e);
 			    });
+
+			    $('#clr').click(function(e){
+			    	erase();
+			    });
+			    $('#sav').click(function(e){
+					save();
+			    });
 			});
 
 			function draw() {
 				// alert("Draw");
 			    ctx.beginPath();
+			    // alert("Draw works");
 			    ctx.moveTo(prevX, prevY);
 			    ctx.lineTo(currX, currY);
 			    ctx.strokeStyle = x;
@@ -64,23 +72,29 @@
 			    var m = confirm("Want to clear");
 			    if (m) {
 			        ctx.clearRect(0, 0, w, h);
-			        document.getElementById("canvasimg").style.display = "none";
+			        // $("#canvasimg")[0].style.display = "none";
+			        $("#canvasimg").hide();
 			    }
 			}
 
 			function save() {
-			    document.getElementById("canvasimg").style.border = "2px solid";
-			    var dataURL = canvas.toDataURL();
-			    document.getElementById("canvasimg").src = dataURL;
-			    document.getElementById("canvasimg").style.display = "inline";
+			    var dataURL = canvas[0].toDataURL();
+			    $("#canvasimg").css({
+			    	"border-width": "2px",
+			    	"border-style": "solid"
+				});
+				$("#canvasimg").attr("src", dataURL);
+			    $("#canvasimg").show();
 			}
 
 			function findxy(res, e) {
+				// alert("findxy");
 			    if (res == 'down') {
+			    	currX = e.clientX - canvas.offset().left;
+		            currY = e.clientY - canvas.offset().top;
 			        prevX = currX;
 			        prevY = currY;
-			        currX = e.clientX - canvas.offset().left;
-			        currY = e.clientY - canvas.offset().top;
+			        
 			        // alert("currx: "+currX);
 
 			        flag = true;
@@ -93,18 +107,23 @@
 			            dot_flag = false;
 			        }
 			    }
-			    if (res == 'up' || res == "out") {
+
+			    if (res == 'up') {
+			    	// alert("up");
 			        flag = false;
+			        currX = e.clientX - canvas.offset().left;
+			        currY = e.clientY - canvas.offset().top;
+			        draw();
+			        // alert("up");
 			    }
 			    if (res == 'move') {
-			        if (flag) {
-			        	// alert("moving");
-			            prevX = currX;
-			            prevY = currY;
-			            currX = e.clientX - canvas.offset().left;
-			            currY = e.clientY - canvas.offset().top;
-			            draw();
-			        }
+		        	// alert("moving");
+		        	
+		            // prevX = currX;
+		            // prevY = currY;
+		            
+		            // draw();
+		        
 			    }
 			}
 		});
@@ -113,7 +132,9 @@
 
 <body>
 	<canvas id="can" width="400" height="400" style="position:absolute;top:10%;left:10%;border:2px solid;"></canvas>
-
+    <img id="canvasimg" style="position:absolute;top:10%;left:52%;" style="display:none;">
+    <input type="button" value="save" id="sav" size="30" onclick="save()" style="position:absolute;top:55%;left:10%;">
+    <input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:55%;left:15%;">
 </body>
 
 </html>
