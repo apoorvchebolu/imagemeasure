@@ -14,6 +14,7 @@
 			var x = "black",
 			    y = 2;
 
+			var storedLines = [];
 			// init();
 
 			$(function() {
@@ -72,6 +73,8 @@
 			    var m = confirm("Want to clear");
 			    if (m) {
 			        ctx.clearRect(0, 0, w, h);
+					storedLines.length = 0;
+					redrawStoredLines();
 			        // $("#canvasimg")[0].style.display = "none";
 			        $("#canvasimg").hide();
 			    }
@@ -113,18 +116,57 @@
 			        flag = false;
 			        currX = e.clientX - canvas.offset().left;
 			        currY = e.clientY - canvas.offset().top;
-			        draw();
+					storedLines.push({
+						x1: prevX,
+						y1: prevY,
+						x2: currX,
+						y2: currY
+					});
+					
+					redrawStoredLines();
+			        //draw();
 			        // alert("up");
 			    }
 			    if (res == 'move') {
 		        	// alert("moving");
-		        	
+					
+					if (!flag) {
+						return;
+					}
+					
+		        	redrawStoredLines();
+					
+					currX = e.clientX - canvas.offset().left;
+					currY = e.clientY - canvas.offset().top;
+					
+					//ctx.beginPath();
+					//ctx.moveTo(prevX, prevY);
+					//ctx.lineTo(startX, startY);
+					//ctx.stroke();
+					
+					draw();
 		            // prevX = currX;
 		            // prevY = currY;
 		            
 		            // draw();
 		        
 			    }
+			}
+			
+			function redrawStoredLines() {
+				ctx.clearRect(0, 0, canvas[0].width, canvas[0].height);
+
+				if (storedLines.length == 0) {
+					return;
+				}
+
+				// redraw each stored line
+				for (var i = 0; i < storedLines.length; i++) {
+					ctx.beginPath();
+					ctx.moveTo(storedLines[i].x1, storedLines[i].y1);
+					ctx.lineTo(storedLines[i].x2, storedLines[i].y2);
+					ctx.stroke();
+				}
 			}
 		});
 	</script>
