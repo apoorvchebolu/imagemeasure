@@ -5,10 +5,23 @@
 </head>
 
 <body>
-	<canvas id="can" width="400" height="400" style="position:absolute;top:10%;left:10%;border:2px solid;"></canvas>
+	<p>
+	<canvas id="can" width="400" height="400" style="border:2px solid;"></canvas>
     <img id="canvasimg" style="position:absolute;top:10%;left:52%;" style="display:none;">
     <input type="button" value="save" id="sav" size="30" onclick="save()" style="position:absolute;top:55%;left:10%;">
     <input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:55%;left:15%;">
+	</p>
+	<p>
+	<table id="table" width="400" style="border:3px solid;">
+	<tr>
+		<th> Start X </th>
+		<th> Start Y </th>
+		<th> End X </th>
+		<th> End Y </th>
+		<th> Distance </th>
+	</tr>
+	</table>
+	</p>
 </body>
 
 </html>

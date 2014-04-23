@@ -71,6 +71,7 @@ $(document).ready(function(){
 			ctx.clearRect(0, 0, w, h);
 			storedLines.length = 0;
 			redrawStoredLines();
+			$('#table').html("<tr> <th> Start X </th> <th> Start Y </th> <th> End X </th> <th> End Y </th> <th> Distance </th> </tr>");
 			// $("#canvasimg")[0].style.display = "none";
 			$("#canvasimg").hide();
 		}
@@ -113,7 +114,6 @@ $(document).ready(function(){
 			currX = e.clientX - canvas.offset().left;
 			currY = e.clientY - canvas.offset().top;
 			distance = lineDistance(currX, currY, prevX, prevY);
-			alert(distance);
 			storedLines.push({
 				x1: prevX,
 				y1: prevY,
@@ -123,6 +123,11 @@ $(document).ready(function(){
 			});
 			
 			redrawStoredLines();
+			
+			$('table').append("<tr><td>" + prevX + "</td>" + 
+			"<td>" + prevY + "</td><td>" + currX + "</td><td>" +
+			currY + "</td><td>" + distance + "</td></tr>");
+			
 			//draw();
 			// alert("up");
 		}
