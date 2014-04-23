@@ -90,8 +90,8 @@ $(document).ready(function(){
 	function findxy(res, e) {
 		// alert("findxy");
 		if (res == 'down') {
-			currX = e.clientX - canvas.offset().left;
-			currY = e.clientY - canvas.offset().top;
+			currX = e.pageX - canvas.offset().left;
+			currY = e.pageY - canvas.offset().top;
 			prevX = currX;
 			prevY = currY;
 			
@@ -111,8 +111,8 @@ $(document).ready(function(){
 		if (res == 'up') {
 			// alert("up");
 			flag = false;
-			currX = e.clientX - canvas.offset().left;
-			currY = e.clientY - canvas.offset().top;
+			currX = e.pageX - canvas.offset().left;
+			currY = e.pageY - canvas.offset().top;
 			distance = lineDistance(currX, currY, prevX, prevY);
 			storedLines.push({
 				x1: prevX,
@@ -138,8 +138,8 @@ $(document).ready(function(){
 				return;
 			}
 			redrawStoredLines();
-			currX = e.clientX - canvas.offset().left;
-			currY = e.clientY - canvas.offset().top;
+			currX = e.pageX - canvas.offset().left;
+			currY = e.pageY - canvas.offset().top;
 			draw();
 		}
 	}
