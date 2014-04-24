@@ -145,9 +145,12 @@
 
                 var savCan = $("#savCanvas");
                 var savCtx = savCan[0].getContext("2d");
+                savCan[0].width = canvas[0].width;
+                savCan[0].height = canvas[0].height;
 
                 savCtx.drawImage(picImg, 0, 0);
                 savCtx.drawImage(drawingImg, 0, 0);
+                savCan.hide();
                 // alert("finished drawing!");
 
                 var dataURL = savCan[0].toDataURL();
