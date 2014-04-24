@@ -21,6 +21,7 @@ $(document).ready(function(){
         imageCtx = imageCanvas[0].getContext('2d');
         canvas.hide();
         imageCanvas.hide();
+        $("#savCanvas").hide();
 
 		// alert("width: " + w);
 
@@ -133,6 +134,15 @@ $(document).ready(function(){
             imageCtx.clearRect(0,0,w,h);
             canvas.hide();
             imageCanvas.hide();
+            $('table').replaceWith("<table id='table' width='400' style='border:3px solid;position:absolute; top: 30%; left: 70%'>"+
+				"<tr>"+
+					"<th> Start X </th>"+
+					"<th> Start Y </th>"+
+					"<th> End X </th>"+
+					"<th> End Y </th>"+
+					"<th> Distance </th>"+
+				"</tr>"+
+				"</table>");
             //Can replace the input file box with a fresh input. Must add the change listener back
             // $("#imageLoader").replaceWith("<input type='file' id='imageLoader' name='imageLoader' style='position:absolute;top:25%'/>");
             storedLines.length = 0;
@@ -163,7 +173,7 @@ $(document).ready(function(){
 
         savCtx.drawImage(picImg, 0, 0);
         savCtx.drawImage(drawingImg, 0, 0);
-        savCan.hide();
+        // savCan.hide();
         // alert("finished drawing!");
 
         var dataURL = savCan[0].toDataURL();
