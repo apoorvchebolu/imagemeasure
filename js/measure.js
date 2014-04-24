@@ -22,6 +22,8 @@ $(document).ready(function(){
         canvas.hide();
         imageCanvas.hide();
         $("#savCanvas").hide();
+        $("#downloadImgLink").hide();
+        $("#clr").hide();
 
 		// alert("width: " + w);
 
@@ -55,66 +57,13 @@ $(document).ready(function(){
 			save();
 		});
 
-		
-
-		var imageLoader = $('#imageLoader');
-        imageLoader.change(function(e){
-            // alert("changed");
-            var reader = new FileReader();
-            // alert("reader readyyy");
-            reader.onload = function(event){
-                // alert("reader ready");
-                var img = new Image();
-                img.onload = function(){
-                	var MAX_WIDTH = 800;
-					var MAX_HEIGHT = 600;
-                    canvas.show();
-                    imageCanvas.show();
-
-                    w = img.width;
-                    h = img.height;
-
-                    // alert("old width: " + w);
-                    var wFactor = 1,
-                    hFactor = 1;
-
-					if (w > h) {
-					  if (w > MAX_WIDTH) {
-					  	hFactor = MAX_WIDTH / w
-					    h *= MAX_WIDTH / w;
-					    w = MAX_WIDTH;
-					  }
-					} else {
-					  if (h > MAX_HEIGHT) {
-					  	wFactor = MAX_HEIGHT / h;
-					    w *= MAX_HEIGHT / h;
-					    h = MAX_HEIGHT;
-					  }
-					}
-					// alert("new width: " + w);
-					canvas[0].width = w;
-                    canvas[0].height = h;
-                    imageCanvas[0].width = w;
-                    imageCanvas[0].height = h;
-                    
-     				// canvas.css({
-     				// 	"width": wFactor*80+"%",
-     				// 	"height": hFactor*60+"%"
-     				// });
-
-     				// imageCanvas.css({
-     				// 	"width": wFactor*80+"%",
-     				// 	"height": hFactor*60+"%"
-     				// });
-
-                     // alert("imageCanvas.width" + imageCanvas.width)
-                    imageCtx.drawImage(img,0,0, w, h);
-                }
-                img.src = event.target.result;
-            }
-            reader.readAsDataURL(e.target.files[0]);
-        });
+		addImageLoaderListener();
     });
+
+	$("#downloadImgLink").click(function(){
+		save();
+		$('#downloadImgLink').attr('href', savCanvas.toDataURL());
+	});
 	
 	function color() {
     
@@ -178,12 +127,16 @@ $(document).ready(function(){
 					"<th> Distance </th>"+
 				"</tr>"+
 				"</table>");
+            $("#downloadImgLink").hide();
+
             //Can replace the input file box with a fresh input. Must add the change listener back
-            // $("#imageLoader").replaceWith("<input type='file' id='imageLoader' name='imageLoader' style='position:absolute;top:25%'/>");
+            $("#imageLoader").replaceWith("<input type='file' id='imageLoader' name='imageLoader' style='position:absolute;top:25%'/>");
+            addImageLoaderListener();
             storedLines.length = 0;
             redrawStoredLines();
             // $("#canvasImg")[0].style.display = "none";
             $("#canvasImg").hide();
+            $("#clr").hide();
         }
     }
 
@@ -212,13 +165,14 @@ $(document).ready(function(){
         // alert("finished drawing!");
 
         var dataURL = savCan[0].toDataURL();
+        return dataURL;
 
-        $("#canvasImg").css({
-            "border-width": "2px",
-            "border-style": "solid"
-        });
-        $("#canvasImg").attr("src", dataURL);
-        $("#canvasImg").show();
+        // $("#canvasImg").css({
+        //     "border-width": "2px",
+        //     "border-style": "solid"
+        // });
+        // $("#canvasImg").attr("src", dataURL);
+        // $("#canvasImg").show();
     }
 
 	function findxy(res, e) {
@@ -305,6 +259,68 @@ $(document).ready(function(){
 		ys = ys * ys;
 
 		return Math.sqrt( xs + ys );
+	}
+
+	function addImageLoaderListener(){
+		var imageLoader = $('#imageLoader');
+        imageLoader.change(function(e){
+            // alert("changed");
+            var reader = new FileReader();
+            // alert("reader readyyy");
+            reader.onload = function(event){
+                // alert("reader ready");
+                var img = new Image();
+                img.onload = function(){
+                	var MAX_WIDTH = 800;
+					var MAX_HEIGHT = 600;
+                    canvas.show();
+                    imageCanvas.show();
+                    $("#downloadImgLink").show();
+                    $("#clr").show();
+
+                    w = img.width;
+                    h = img.height;
+
+                    // alert("old width: " + w);
+                    var wFactor = 1,
+                    hFactor = 1;
+
+					if (w > h) {
+					  if (w > MAX_WIDTH) {
+					  	hFactor = MAX_WIDTH / w
+					    h *= MAX_WIDTH / w;
+					    w = MAX_WIDTH;
+					  }
+					} else {
+					  if (h > MAX_HEIGHT) {
+					  	wFactor = MAX_HEIGHT / h;
+					    w *= MAX_HEIGHT / h;
+					    h = MAX_HEIGHT;
+					  }
+					}
+					// alert("new width: " + w);
+					canvas[0].width = w;
+                    canvas[0].height = h;
+                    imageCanvas[0].width = w;
+                    imageCanvas[0].height = h;
+                    
+     				// canvas.css({
+     				// 	"width": wFactor*80+"%",
+     				// 	"height": hFactor*60+"%"
+     				// });
+
+     				// imageCanvas.css({
+     				// 	"width": wFactor*80+"%",
+     				// 	"height": hFactor*60+"%"
+     				// });
+
+                     // alert("imageCanvas.width" + imageCanvas.width)
+                    imageCtx.drawImage(img,0,0, w, h);
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(e.target.files[0]);
+        });
 	}
 
 });
