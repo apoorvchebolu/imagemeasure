@@ -68,6 +68,39 @@ $(document).ready(function(){
 		$('#downloadImgLink').attr('href', savCanvas.toDataURL());
 	});
 	
+	function color() {
+    
+    // switch (obj.id) {
+    //     case "green":
+    //     	alert("hit green");
+    //         x = "green";
+    //         break;
+    //     case "blue":
+    //         x = "blue";
+    //         break;
+    //     case "red":
+    //         x = "red";
+    //         break;
+    //     case "yellow":
+    //         x = "yellow";
+    //         break;
+    //     case "orange":
+    //         x = "orange";
+    //         break;
+    //     case "black":
+    //         x = "black";
+    //         break;
+    //     case "white":
+    //         x = "white";
+    //         break;
+    // }
+
+    alert("hey");
+
+    if (x == "white") y = 14;
+    else y = 2;
+
+	}
 
 	function draw() {
 		// alert("Draw");
@@ -324,4 +357,5 @@ $(document).ready(function(){
             reader.readAsDataURL(e.target.files[0]);
         });
 	}
+
 });
