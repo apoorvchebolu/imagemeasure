@@ -113,6 +113,11 @@ $(document).ready(function(){
             reader.readAsDataURL(e.target.files[0]);
         });
     });
+
+	$("#downloadImgLink").click(function(){
+		save();
+		$('#downloadImgLink').attr('href', savCanvas.toDataURL());
+	});
 	
 
 	function draw() {
@@ -177,13 +182,14 @@ $(document).ready(function(){
         // alert("finished drawing!");
 
         var dataURL = savCan[0].toDataURL();
+        return dataURL;
 
-        $("#canvasImg").css({
-            "border-width": "2px",
-            "border-style": "solid"
-        });
-        $("#canvasImg").attr("src", dataURL);
-        $("#canvasImg").show();
+        // $("#canvasImg").css({
+        //     "border-width": "2px",
+        //     "border-style": "solid"
+        // });
+        // $("#canvasImg").attr("src", dataURL);
+        // $("#canvasImg").show();
     }
 
 	function findxy(res, e) {
