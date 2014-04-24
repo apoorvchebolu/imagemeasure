@@ -56,6 +56,9 @@ $(document).ready(function(){
 		$('#sav').click(function(e){
 			save();
 		});
+		$('#undo').click(function(e){
+			undo();
+		});
 
 		$('#green').click(function(e){
 			x="green";
@@ -176,6 +179,14 @@ $(document).ready(function(){
         // $("#canvasImg").show();
     }
 
+	function undo() {
+		storedLines.pop();
+		var tr = $(this).closest('tr');
+		tr.remove();
+		redrawStoredLines();
+		drawTable();
+	}
+	
 	function findxy(res, e) {
 		// alert("findxy");
 		if (res == 'down') {
@@ -214,11 +225,12 @@ $(document).ready(function(){
 			});
 			
 			redrawStoredLines();
-			
-			$('table').append("<tr><td>" + prevX + "</td>" + 
-			"<td>" + prevY + "</td><td>" + currX + "</td><td>" +
-			currY + "</td><td>" + distance + "</td></tr>");
-			
+			drawTable();
+
+			// $('table').append("<tr><td>" + prevx + "</td>" + 
+			// "<td>" + prevy + "</td><td>" + currx + "</td><td>" +
+			// curry + "</td><td>" + distance + "</td></tr>");
+		
 			//draw();
 			// alert("up");
 		}
@@ -232,6 +244,29 @@ $(document).ready(function(){
 			currX = e.pageX - canvas.offset().left;
 			currY = e.pageY - canvas.offset().top;
 			draw();
+		}
+	}
+	
+	function drawTable() {
+		$('table').replaceWith(
+			"<table id='table' width='400' style='border:3px solid;position:absolute; top: 30%; left: 70%'>" +
+				"<tr>"+
+					"<th> Start X </th>" +
+					"<th> Start Y </th>" +
+					"<th> End X </th>" +
+					"<th> End Y </th>" +
+					"<th> Distance </th>" +
+				"</tr>" +
+			"</table>");
+			
+		for (var i = 0; i < storedLines.length; i++) {
+			$('table').append(
+				"<tr><td>" + storedLines[i].x1 + 
+				"</td><td>" + storedLines[i].y1 +
+				"</td><td>" + storedLines[i].x2 + 
+				"</td><td>" + storedLines[i].y2 +
+				"</td><td>" + storedLines[i].dist +
+				"</td></tr>");
 		}
 	}
 	

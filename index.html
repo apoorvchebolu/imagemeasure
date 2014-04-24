@@ -16,7 +16,6 @@
 
 	<label>Image File:</label><br/>
 	<input type="file" id="imageLoader" name="imageLoader" style="position:absolute;top:25%"/>
-	
 
 	<div style="position:absolute;top:19%;left:25%;">Choose Color</div>
     <div style="position:absolute;top:23%;left:27%;width:10px;height:10px;background:green;" id="green"></div>
@@ -31,6 +30,7 @@
 	<canvas id="can" style="position:absolute;top:30%; border:2px solid; z-index: 1"></canvas>
     <img id="canvasImg" style="position:absolute;top:10%;left:52%;" style="display:none;">
 	<canvas id="savCanvas" style="position:absolute;top:10%;left:52%;" style="display:none;"></canvas>
+	<input type="button" value="undo" id="undo" size="30" onclick="undo()" style="position:absolute;top:25%;left:80%;">
     <!-- <input type="button" value="save" id="sav" size="30" onclick="save()" > -->
 	<a id="downloadImgLink" download="MyImage.png" href="#" target="_blank" style="position:absolute;top:25%;left:70%;">download</a>
 	<input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:25%;left:75%;">
