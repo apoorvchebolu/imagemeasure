@@ -1,11 +1,11 @@
 $(document).ready(function(){
-
 	var canvas, ctx, flag = false,
 		prevX = 0,
 		currX = 0,
 		prevY = 0,
 		currY = 0,
 		dot_flag = false;
+	var imageCanvas, imageCtx;
 
 	var x = "black",
 		y = 2;
@@ -16,9 +16,11 @@ $(document).ready(function(){
 	$(function() {
 		// alert("init");
 		canvas = $('#can');
-		ctx = canvas[0].getContext("2d");
-		w = canvas[0].width;
-		h = canvas[0].height;
+        ctx = canvas[0].getContext("2d");
+        imageCanvas = $('#imageCanvas');
+        imageCtx = imageCanvas[0].getContext('2d');
+        canvas.hide();
+        imageCanvas.hide();
 
 		// alert("width: " + w);
 
@@ -51,7 +53,59 @@ $(document).ready(function(){
 		$('#sav').click(function(e){
 			save();
 		});
-	});
+
+		var imageLoader = $('#imageLoader');
+        imageLoader.change(function(e){
+            // alert("changed");
+            var reader = new FileReader();
+            // alert("reader readyyy");
+            reader.onload = function(event){
+                // alert("reader ready");
+                var img = new Image();
+                img.onload = function(){
+                	var MAX_WIDTH = 800;
+					var MAX_HEIGHT = 600;
+                    canvas.show();
+                    imageCanvas.show();
+
+                    w = img.width;
+                    h = img.height;
+
+					if (w > h) {
+					  if (w > MAX_WIDTH) {
+					    h *= MAX_WIDTH / w;
+					    w = MAX_WIDTH;
+					  }
+					} else {
+					  if (h > MAX_HEIGHT) {
+					    w *= MAX_HEIGHT / h;
+					    h = MAX_HEIGHT;
+					  }
+					}
+					canvas[0].width = w;
+                    canvas[0].height = h;
+                    imageCanvas[0].width = w;
+                    imageCanvas[0].height = h;
+                    
+     				canvas.css({
+     					"width": w,
+     					"height": h
+     				});
+
+     				imageCanvas.css({
+     					"width": w,
+     					"height": h
+     				});
+
+                     // alert("imageCanvas.width" + imageCanvas.width)
+                    imageCtx.drawImage(img,0,0);
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(e.target.files[0]);
+        });
+    });
+	
 
 	function draw() {
 		// alert("Draw");
@@ -66,26 +120,52 @@ $(document).ready(function(){
 	}
 
 	function erase() {
-		var m = confirm("Want to clear");
-		if (m) {
-			ctx.clearRect(0, 0, w, h);
-			storedLines.length = 0;
-			redrawStoredLines();
-			$('#table').html("<tr> <th> Start X </th> <th> Start Y </th> <th> End X </th> <th> End Y </th> <th> Distance </th> </tr>");
-			// $("#canvasimg")[0].style.display = "none";
-			$("#canvasimg").hide();
-		}
-	}
+        var m = confirm("Do you want to clear?");
+        if (m) {
+            ctx.clearRect(0, 0, w, h);
+            imageCtx.clearRect(0,0,w,h);
+            canvas.hide();
+            imageCanvas.hide();
+            storedLines.length = 0;
+            redrawStoredLines();
+            // $("#canvasImg")[0].style.display = "none";
+            $("#canvasImg").hide();
+        }
+    }
 
 	function save() {
-		var dataURL = canvas[0].toDataURL();
-		$("#canvasimg").css({
-			"border-width": "2px",
-			"border-style": "solid"
-		});
-		$("#canvasimg").attr("src", dataURL);
-		$("#canvasimg").show();
-	}
+        // var dataURL = canvas[0].toDataURL();
+        // $("#canvasImg").css({
+        //     "border-width": "2px",
+        //     "border-style": "solid"
+        // });
+        // $("#canvasImg").attr("src", dataURL);
+        // $("#canvasImg").show();
+
+        var drawingImg = new Image();
+        drawingImg.src = canvas[0].toDataURL();
+        var picImg = new Image();
+        picImg.src = imageCanvas[0].toDataURL();
+
+        var savCan = $("#savCanvas");
+        var savCtx = savCan[0].getContext("2d");
+        savCan[0].width = canvas[0].width;
+        savCan[0].height = canvas[0].height;
+
+        savCtx.drawImage(picImg, 0, 0);
+        savCtx.drawImage(drawingImg, 0, 0);
+        savCan.hide();
+        // alert("finished drawing!");
+
+        var dataURL = savCan[0].toDataURL();
+
+        $("#canvasImg").css({
+            "border-width": "2px",
+            "border-style": "solid"
+        });
+        $("#canvasImg").attr("src", dataURL);
+        $("#canvasImg").show();
+    }
 
 	function findxy(res, e) {
 		// alert("findxy");

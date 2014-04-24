@@ -5,14 +5,29 @@
 </head>
 
 <body>
+	<div id = "page_header">
+	    <div class="page-header">
+	        <h1>Image Measure</h1>
+	        <body> Ranjana Addanki, Apoorv Chebolu, Stephen Huang, Manan Shah </body>
+	    </div>
+	</div>
+
+	<br></br>
+
+	<label>Image File:</label><br/>
+	<input type="file" id="imageLoader" name="imageLoader" style="position:absolute;top:25%"/>
+	
+
+	
+	<canvas id="imageCanvas" style="position:absolute;top:30%;border:2px solid; z-index: 0"></canvas>
+	<canvas id="can" style="position:absolute;top:30%; border:2px solid; z-index: 1"></canvas>
+    <img id="canvasImg" style="position:absolute;top:10%;left:52%;" style="display:none;">
+	<canvas id="savCanvas" style="position:absolute;top:10%;left:52%;" style="display:none;"></canvas>
+    <input type="button" value="save" id="sav" size="30" onclick="save()" style="position:absolute;top:25%;left:70%;">
+    <input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:25%;left:75%;">
+	
 	<p>
-	<canvas id="can" width="400" height="400" style="border:2px solid;"></canvas>
-    <img id="canvasimg" style="position:absolute;top:10%;left:52%;" style="display:none;">
-    <input type="button" value="save" id="sav" size="30" onclick="save()" style="position:absolute;top:55%;left:10%;">
-    <input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:55%;left:15%;">
-	</p>
-	<p>
-	<table id="table" width="400" style="border:3px solid;">
+	<table id="table" width="400" style="border:3px solid;position:absolute; top: 30%; left: 70%">
 	<tr>
 		<th> Start X </th>
 		<th> Start Y </th>
