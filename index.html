@@ -30,7 +30,7 @@
                 prevY = 0,
                 currY = 0,
                 dot_flag = false;
-            var overlapcanvas, overlapctx;
+            var overlapCanvas, overlapCtx;
 
             var x = "black",
                 y = 2;
@@ -43,9 +43,10 @@
                 // alert("init");
                 canvas = $('#can');
                 ctx = canvas[0].getContext("2d");
-                w = canvas[0].width;
-                h = canvas[0].height;
-
+                overlapCanvas = $('#imageCanvas');
+                overlapCtx = overlapCanvas[0].getContext('2d');
+                canvas.hide();
+                overlapCanvas.hide();
                 // alert("width: " + w);
 
 
@@ -78,10 +79,8 @@
                     save();
                 });
 
+                
                 var imageLoader = $('#imageLoader');
-                overlapcanvas = $('#imageCanvas');
-                overlapctx = overlapcanvas[0].getContext('2d');
-                // alert("changedddd");
                 imageLoader.change(function(e){
                     // alert("changed");
                     var reader = new FileReader();
@@ -90,13 +89,17 @@
                         // alert("reader ready");
                         var img = new Image();
                         img.onload = function(){
+                            canvas.show();
+                            overlapCanvas.show();
                             canvas[0].width = img.width;
                              // alert("img width: " + canvas.width);
                             canvas[0].height = img.height;
-                            overlapcanvas[0].width = img.width;
-                            overlapcanvas[0].height = img.height;
-                             // alert("overlapCanvas.width" + overlapcanvas.width)
-                            overlapctx.drawImage(img,0,0);
+                            overlapCanvas[0].width = img.width;
+                            overlapCanvas[0].height = img.height;
+                            w = canvas[0].width;
+                            h = canvas[0].height;
+                             // alert("overlapCanvas.width" + overlapCanvas.width)
+                            overlapCtx.drawImage(img,0,0);
                         }
                         img.src = event.target.result;
                     }
@@ -122,26 +125,29 @@
                 var m = confirm("Do you want to clear?");
                 if (m) {
                     ctx.clearRect(0, 0, w, h);
+                    overlapCtx.clearRect(0,0,w,h);
+                    canvas.hide();
+                    overlapCanvas.hide();
                     storedLines.length = 0;
                     redrawStoredLines();
-                    // $("#canvasimg")[0].style.display = "none";
-                    $("#canvasimg").hide();
+                    // $("#canvasImg")[0].style.display = "none";
+                    $("#canvasImg").hide();
                 }
             }
 
             function save() {
                 // var dataURL = canvas[0].toDataURL();
-                // $("#canvasimg").css({
+                // $("#canvasImg").css({
                 //     "border-width": "2px",
                 //     "border-style": "solid"
                 // });
-                // $("#canvasimg").attr("src", dataURL);
-                // $("#canvasimg").show();
+                // $("#canvasImg").attr("src", dataURL);
+                // $("#canvasImg").show();
 
                 var drawingImg = new Image();
                 drawingImg.src = canvas[0].toDataURL();
                 var picImg = new Image();
-                picImg.src = overlapcanvas[0].toDataURL();
+                picImg.src = overlapCanvas[0].toDataURL();
 
                 var savCan = $("#savCanvas");
                 var savCtx = savCan[0].getContext("2d");
@@ -155,19 +161,19 @@
 
                 var dataURL = savCan[0].toDataURL();
 
-                $("#canvasimg").css({
+                $("#canvasImg").css({
                     "border-width": "2px",
                     "border-style": "solid"
                 });
-                $("#canvasimg").attr("src", dataURL);
-                $("#canvasimg").show();
+                $("#canvasImg").attr("src", dataURL);
+                $("#canvasImg").show();
             }
 
             function findxy(res, e) {
                 // alert("findxy");
                 if (res == 'down') {
-                    currX = e.clientX - canvas.offset().left;
-                    currY = e.clientY - canvas.offset().top;
+                    currX = e.pageX - canvas.offset().left;
+                    currY = e.pageY - canvas.offset().top;
                     prevX = currX;
                     prevY = currY;
                     
@@ -187,8 +193,8 @@
                 if (res == 'up') {
                     // alert("up");
                     flag = false;
-                    currX = e.clientX - canvas.offset().left;
-                    currY = e.clientY - canvas.offset().top;
+                    currX = e.pageX - canvas.offset().left;
+                    currY = e.pageY - canvas.offset().top;
                     storedLines.push({
                         x1: prevX,
                         y1: prevY,
@@ -209,8 +215,8 @@
                     
                     redrawStoredLines();
                     
-                    currX = e.clientX - canvas.offset().left;
-                    currY = e.clientY - canvas.offset().top;
+                    currX = e.pageX - canvas.offset().left;
+                    currY = e.pageY - canvas.offset().top;
                     
                     //ctx.beginPath();
                     //ctx.moveTo(prevX, prevY);
@@ -262,7 +268,7 @@
 <canvas id="imageCanvas" style="position:absolute;top:10%;left:10%;border:2px solid; z-index: 0"></canvas>
 
 <canvas id="can" style="position:absolute;top:10%;left:10%;border:2px solid; z-index: 1"></canvas>
-<img id="canvasimg" style="position:absolute;top:10%;left:52%;" style="display:none;">
+<img id="canvasImg" style="position:absolute;top:10%;left:52%;" style="display:none;">
 <canvas id="savCanvas" style="position:absolute;top:10%;left:52%;" style="display:none;"></canvas>
 <input type="button" value="save" id="sav" size="30" onclick="save()" style="position:absolute;top:55%;left:10%; z-index: 2">
 <input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:55%;left:15%; z-index: 2">
@@ -277,7 +283,7 @@
 
 <!-- <body>
     <canvas id="can" width="400" height="400" style="position:absolute;top:10%;left:10%;border:2px solid;"></canvas>
-    <img id="canvasimg" style="position:absolute;top:10%;left:52%;" style="display:none;">
+    <img id="canvasImg" style="position:absolute;top:10%;left:52%;" style="display:none;">
     <input type="button" value="save" id="sav" size="30" onclick="save()" style="position:absolute;top:55%;left:10%;">
     <input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:55%;left:15%;">
 </body> -->
