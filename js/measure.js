@@ -71,34 +71,41 @@ $(document).ready(function(){
                     w = img.width;
                     h = img.height;
 
+                    // alert("old width: " + w);
+                    var wFactor = 1,
+                    hFactor = 1;
+
 					if (w > h) {
 					  if (w > MAX_WIDTH) {
+					  	hFactor = MAX_WIDTH / w
 					    h *= MAX_WIDTH / w;
 					    w = MAX_WIDTH;
 					  }
 					} else {
 					  if (h > MAX_HEIGHT) {
+					  	wFactor = MAX_HEIGHT / h;
 					    w *= MAX_HEIGHT / h;
 					    h = MAX_HEIGHT;
 					  }
 					}
+					// alert("new width: " + w);
 					canvas[0].width = w;
                     canvas[0].height = h;
                     imageCanvas[0].width = w;
                     imageCanvas[0].height = h;
                     
-     				canvas.css({
-     					"width": w,
-     					"height": h
-     				});
+     				// canvas.css({
+     				// 	"width": wFactor*80+"%",
+     				// 	"height": hFactor*60+"%"
+     				// });
 
-     				imageCanvas.css({
-     					"width": w,
-     					"height": h
-     				});
+     				// imageCanvas.css({
+     				// 	"width": wFactor*80+"%",
+     				// 	"height": hFactor*60+"%"
+     				// });
 
                      // alert("imageCanvas.width" + imageCanvas.width)
-                    imageCtx.drawImage(img,0,0);
+                    imageCtx.drawImage(img,0,0, w, h);
                 }
                 img.src = event.target.result;
             }
@@ -126,6 +133,8 @@ $(document).ready(function(){
             imageCtx.clearRect(0,0,w,h);
             canvas.hide();
             imageCanvas.hide();
+            //Can replace the input file box with a fresh input. Must add the change listener back
+            // $("#imageLoader").replaceWith("<input type='file' id='imageLoader' name='imageLoader' style='position:absolute;top:25%'/>");
             storedLines.length = 0;
             redrawStoredLines();
             // $("#canvasImg")[0].style.display = "none";
