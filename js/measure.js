@@ -57,6 +57,41 @@ $(document).ready(function(){
 			save();
 		});
 
+		$('#green').click(function(e){
+			x="green";
+			y=2;
+		});
+
+		$('#blue').click(function(e){
+			x="blue";
+			y=2;
+		});
+
+		$('#red').click(function(e){
+			x="red";
+			y=2;
+		});
+
+		$('#yellow').click(function(e){
+			x="yellow";
+			y=2;
+		});
+
+		$('#orange').click(function(e){
+			x="orange";
+			y=2;
+		});
+
+		$('#black').click(function(e){
+			x="black";
+			y=2;
+		});
+
+		$('#white').click(function(e){
+			x="white";
+			y=14;
+		});
+
 		addImageLoaderListener();
     });
 
@@ -64,40 +99,6 @@ $(document).ready(function(){
 		save();
 		$('#downloadImgLink').attr('href', savCanvas.toDataURL());
 	});
-	
-	function color() {
-    
-    // switch (obj.id) {
-    //     case "green":
-    //     	alert("hit green");
-    //         x = "green";
-    //         break;
-    //     case "blue":
-    //         x = "blue";
-    //         break;
-    //     case "red":
-    //         x = "red";
-    //         break;
-    //     case "yellow":
-    //         x = "yellow";
-    //         break;
-    //     case "orange":
-    //         x = "orange";
-    //         break;
-    //     case "black":
-    //         x = "black";
-    //         break;
-    //     case "white":
-    //         x = "white";
-    //         break;
-    // }
-
-    alert("hey");
-
-    if (x == "white") y = 14;
-    else y = 2;
-
-	}
 
 	function draw() {
 		// alert("Draw");
@@ -207,6 +208,8 @@ $(document).ready(function(){
 				y1: prevY,
 				x2: currX,
 				y2: currY,
+				xColor: x,
+				yColor: y,
 				dist: distance
 			});
 			
@@ -244,6 +247,8 @@ $(document).ready(function(){
 			ctx.beginPath();
 			ctx.moveTo(storedLines[i].x1, storedLines[i].y1);
 			ctx.lineTo(storedLines[i].x2, storedLines[i].y2);
+			ctx.strokeStyle = storedLines[i].xColor;
+			ctx.lineWidth = storedLines[i].yColor;
 			ctx.stroke();
 		}
 	}
