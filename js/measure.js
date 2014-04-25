@@ -6,6 +6,7 @@ $(document).ready(function(){
 		currY = 0,
 		dot_flag = false;
 	var imageCanvas, imageCtx;
+	var rulerLength=1;
 
 	var x = "black",
 		y = 2;
@@ -128,34 +129,36 @@ $(document).ready(function(){
 	}
 	function calibrate(){
 		var m = confirm("Do you want to Calibrate?");
-		if (storedLines.length == 0) {
-			alert("No line Drawn");
-		}else{
-			var linepixel = storedLines[storedLines.length - 1].dist;
-			var ratio = linepixel/$('#textbox1').val();
-			calVal = $('#textbox1').val();
-			 $('table').replaceWith("<table id='table' width='400' style='border:3px solid;position:absolute; top: 30%; left: 70%'>"+
-				"<tr>"+
-					"<th> Start X </th>"+
-					"<th> Start Y </th>"+
-					"<th> End X </th>"+
-					"<th> End Y </th>"+
-					"<th> Distance </th>"+
-				"</tr>"+
-				"</table>");
-			 
-			
-			 for (var i=0;i<storedLines.length;i++)
-				{
-				alert( storedLines[i].dist);
-				storedLines[i].calDist = storedLines[i].dist/$('#textbox1').val();
-				$('table').append("<tr><td>" + storedLines[i].x1 + "</td>" + 
-				"<td>" + storedLines[i].y1 + "</td><td>" + storedLines[i].x2 + "</td><td>" +
-				storedLines[i].y2 + "</td><td>" + storedLines[i].calDist + "</td></tr>");
-				}
+		if(m){
+			if (storedLines.length == 0) {
+				alert("No line Drawn");
+			}else{
+				rulerLength = storedLines[storedLines.length - 1].dist;
+				// var ratio = linepixel/$('#textbox1').val();
+				calVal = $('#textbox1').val();
+				 $('table').replaceWith("<table id='table' width='400' style='border:3px solid;position:absolute; top: 30%; left: 70%'>"+
+					"<tr>"+
+						"<th> Start X </th>"+
+						"<th> Start Y </th>"+
+						"<th> End X </th>"+
+						"<th> End Y </th>"+
+						"<th> Distance </th>"+
+					"</tr>"+
+					"</table>");
+				 
 				
-			
-			
+				 for (var i=0;i<storedLines.length;i++)
+					{
+					alert( storedLines[i].dist);
+					storedLines[i].calDist = calVal/rulerLength*storedLines[i].dist;
+					$('table').append("<tr><td>" + storedLines[i].x1 + "</td>" + 
+					"<td>" + storedLines[i].y1 + "</td><td>" + storedLines[i].x2 + "</td><td>" +
+					storedLines[i].y2 + "</td><td>" + storedLines[i].calDist + "</td></tr>");
+					}
+					
+				
+				
+			}
 		}
 		
 	}
@@ -263,8 +266,8 @@ $(document).ready(function(){
 				y1: prevY,
 				x2: currX,
 				y2: currY,
-				dist: distance*calVal,
-				calDist: distance,
+				dist: distance,
+				calDist: calVal/rulerLength*distance,
 				xColor: x,
 				yColor: y,
 			});
@@ -344,7 +347,7 @@ $(document).ready(function(){
 			ys = y2 - y1;
 			ys = ys * ys;
 
-			return Math.sqrt( xs + ys )/calVal;
+			return Math.sqrt( xs + ys );
 		
 		
 	}
