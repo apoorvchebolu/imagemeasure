@@ -11,6 +11,7 @@ $(document).ready(function(){
 		y = 2;
 
 	var storedLines = [];
+	var calVal = 1;
 	// init();
 
 	$(function() {
@@ -51,6 +52,11 @@ $(document).ready(function(){
 		$('#clr').click(function(e){
 			erase();
 		});
+		
+		$('#cal').click(function(e){
+			calibrate();
+		});
+		
 		$('#sav').click(function(e){
 			save();
 		});
@@ -126,7 +132,39 @@ $(document).ready(function(){
 		ctx.stroke();
 		ctx.closePath();
 	}
-
+	function calibrate(){
+		var m = confirm("Do you want to Calibrate?");
+		if (storedLines.length == 0) {
+			alert("No line Drawn");
+		}else{
+			var linepixel = storedLines[storedLines.length - 1].dist;
+			var ratio = linepixel/$('#textbox1').val();
+			calVal = $('#textbox1').val();
+			 $('table').replaceWith("<table id='table' width='400' style='border:3px solid;position:absolute; top: 30%; left: 70%'>"+
+				"<tr>"+
+					"<th> Start X </th>"+
+					"<th> Start Y </th>"+
+					"<th> End X </th>"+
+					"<th> End Y </th>"+
+					"<th> Distance </th>"+
+				"</tr>"+
+				"</table>");
+			 
+			
+			 for (var i=0;i<storedLines.length;i++)
+				{
+				alert( storedLines[i].dist);
+				storedLines[i].calDist = storedLines[i].dist/$('#textbox1').val();
+				$('table').append("<tr><td>" + storedLines[i].x1 + "</td>" + 
+				"<td>" + storedLines[i].y1 + "</td><td>" + storedLines[i].x2 + "</td><td>" +
+				storedLines[i].y2 + "</td><td>" + storedLines[i].calDist + "</td></tr>");
+				}
+				
+			
+			
+		}
+		
+	}
 	function erase() {
         var m = confirm("Do you want to clear?");
         if (m) {
@@ -150,7 +188,7 @@ $(document).ready(function(){
             // $("#canvasImg")[0].style.display = "none";
             $("#canvasImg").hide();
         }
-    }
+	}
 
 	function save() {
         // var dataURL = canvas[0].toDataURL();
@@ -212,13 +250,14 @@ $(document).ready(function(){
 			flag = false;
 			currX = e.pageX - canvas.offset().left;
 			currY = e.pageY - canvas.offset().top;
-			distance = lineDistance(currX, currY, prevX, prevY);
+			distance = lineDistance(currX, currY, prevX, prevY, calVal);
 			storedLines.push({
 				x1: prevX,
 				y1: prevY,
 				x2: currX,
 				y2: currY,
-				dist: distance
+				dist: distance*calVal,
+				calDist: distance
 			});
 			
 			redrawStoredLines();
@@ -259,16 +298,19 @@ $(document).ready(function(){
 		}
 	}
 	
-	function lineDistance(x1, y1, x2, y2) {
+	function lineDistance(x1, y1, x2, y2, calVal) {
+		
 		var xs = 0;
 		var ys = 0;
+		
+			xs = x2 - x1;
+			xs = xs * xs;
 
-		xs = x2 - x1;
-		xs = xs * xs;
+			ys = y2 - y1;
+			ys = ys * ys;
 
-		ys = y2 - y1;
-		ys = ys * ys;
-
-		return Math.sqrt( xs + ys );
+			return Math.sqrt( xs + ys )/calVal;
+		
+		
 	}
 });
