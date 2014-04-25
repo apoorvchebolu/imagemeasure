@@ -61,12 +61,19 @@ $(document).ready(function(){
 		});
 
 		addImageLoaderListener();
+
+		$("#downloadImgLink").click(function(){
+			save();
+			$('#downloadImgLink').attr('href', savCanvas.toDataURL());
+		});
+
+		$("#exportDataLink").click(function(){
+			alert($("#table").html());
+
+		});
     });
 
-	$("#downloadImgLink").click(function(){
-		save();
-		$('#downloadImgLink').attr('href', savCanvas.toDataURL());
-	});
+	
 	
 	function color() {
     
