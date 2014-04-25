@@ -22,8 +22,8 @@ $(document).ready(function(){
         canvas.hide();
         imageCanvas.hide();
         $("#savCanvas").hide();
-        $("#downloadImgLink").hide();
-        $("#clr").hide();
+        // $("#downloadImgLink").hide();
+        // $("#clr").hide();
 
 		// alert("width: " + w);
 
@@ -103,44 +103,11 @@ $(document).ready(function(){
 		});
 
 		$("#exportDataLink").click(function(){
-			alert($("#table").html());
-
+			// alert($("#table").html());
+			var uri = $("#table").toCSV();
+			$("#exportDataLink").attr("href", uri);
 		});
     });
-	
-	function color() {
-    
-    // switch (obj.id) {
-    //     case "green":
-    //     	alert("hit green");
-    //         x = "green";
-    //         break;
-    //     case "blue":
-    //         x = "blue";
-    //         break;
-    //     case "red":
-    //         x = "red";
-    //         break;
-    //     case "yellow":
-    //         x = "yellow";
-    //         break;
-    //     case "orange":
-    //         x = "orange";
-    //         break;
-    //     case "black":
-    //         x = "black";
-    //         break;
-    //     case "white":
-    //         x = "white";
-    //         break;
-    // }
-
-    alert("hey");
-
-    if (x == "white") y = 14;
-    else y = 2;
-
-	}
 
 	function draw() {
 		// alert("Draw");
@@ -170,7 +137,7 @@ $(document).ready(function(){
 					"<th> Distance </th>"+
 				"</tr>"+
 				"</table>");
-            $("#downloadImgLink").hide();
+            // $("#downloadImgLink").hide();
 
             //Can replace the input file box with a fresh input. Must add the change listener back
             $("#imageLoader").replaceWith("<input type='file' id='imageLoader' name='imageLoader' style='position:absolute;top:25%'/>");
@@ -179,7 +146,7 @@ $(document).ready(function(){
             redrawStoredLines();
             // $("#canvasImg")[0].style.display = "none";
             $("#canvasImg").hide();
-            $("#clr").hide();
+            // $("#clr").hide();
         }
     }
 
@@ -400,6 +367,37 @@ $(document).ready(function(){
             }
             reader.readAsDataURL(e.target.files[0]);
         });
+	}
+
+	jQuery.fn.toCSV = function() {
+	  var data = $(this).first(); //Only one table
+	  var csvData = [];
+	  var tmpArr = [];
+	  var tmpStr = '';
+	  data.find("tr").each(function() {
+	      if($(this).find("th").length) {
+	          $(this).find("th").each(function() {
+	            tmpStr = $(this).text().replace(/"/g, '""');
+	            tmpArr.push('"' + tmpStr + '"');
+	          });
+	          csvData.push(tmpArr);
+	      } else {
+	          tmpArr = [];
+	             $(this).find("td").each(function() {
+	                  if($(this).text().match(/^-{0,1}\d*\.{0,1}\d+$/)) {
+	                      tmpArr.push(parseFloat($(this).text()));
+	                  } else {
+	                      tmpStr = $(this).text().replace(/"/g, '""');
+	                      tmpArr.push('"' + tmpStr + '"');
+	                  }
+	             });
+	          csvData.push(tmpArr.join(','));
+	      }
+	  });
+	  var output = csvData.join('\n');
+	  var uri = 'data:application/csv;charset=UTF-8,' + encodeURIComponent(output);
+	  return uri;
+	  // window.open(uri);
 	}
 
 });
