@@ -23,6 +23,8 @@ $(document).ready(function(){
         canvas.hide();
         imageCanvas.hide();
         $("#savCanvas").hide();
+        // $("#downloadImgLink").hide();
+        // $("#clr").hide();
 
 		// alert("width: " + w);
 
@@ -60,66 +62,58 @@ $(document).ready(function(){
 		$('#sav').click(function(e){
 			save();
 		});
+		$('#undo').click(function(e){
+			undo();
+		});
 
-		var imageLoader = $('#imageLoader');
-        imageLoader.change(function(e){
-            // alert("changed");
-            var reader = new FileReader();
-            // alert("reader readyyy");
-            reader.onload = function(event){
-                // alert("reader ready");
-                var img = new Image();
-                img.onload = function(){
-                	var MAX_WIDTH = 800;
-					var MAX_HEIGHT = 600;
-                    canvas.show();
-                    imageCanvas.show();
+		$('#green').click(function(e){
+			x="green";
+			y=2;
+		});
 
-                    w = img.width;
-                    h = img.height;
+		$('#blue').click(function(e){
+			x="blue";
+			y=2;
+		});
 
-                    // alert("old width: " + w);
-                    var wFactor = 1,
-                    hFactor = 1;
+		$('#red').click(function(e){
+			x="red";
+			y=2;
+		});
 
-					if (w > h) {
-					  if (w > MAX_WIDTH) {
-					  	hFactor = MAX_WIDTH / w
-					    h *= MAX_WIDTH / w;
-					    w = MAX_WIDTH;
-					  }
-					} else {
-					  if (h > MAX_HEIGHT) {
-					  	wFactor = MAX_HEIGHT / h;
-					    w *= MAX_HEIGHT / h;
-					    h = MAX_HEIGHT;
-					  }
-					}
-					// alert("new width: " + w);
-					canvas[0].width = w;
-                    canvas[0].height = h;
-                    imageCanvas[0].width = w;
-                    imageCanvas[0].height = h;
-                    
-     				// canvas.css({
-     				// 	"width": wFactor*80+"%",
-     				// 	"height": hFactor*60+"%"
-     				// });
+		$('#yellow').click(function(e){
+			x="yellow";
+			y=2;
+		});
 
-     				// imageCanvas.css({
-     				// 	"width": wFactor*80+"%",
-     				// 	"height": hFactor*60+"%"
-     				// });
+		$('#orange').click(function(e){
+			x="orange";
+			y=2;
+		});
 
-                     // alert("imageCanvas.width" + imageCanvas.width)
-                    imageCtx.drawImage(img,0,0, w, h);
-                }
-                img.src = event.target.result;
-            }
-            reader.readAsDataURL(e.target.files[0]);
-        });
+		$('#black').click(function(e){
+			x="black";
+			y=2;
+		});
+
+		$('#white').click(function(e){
+			x="white";
+			y=14;
+		});
+
+		addImageLoaderListener();
+
+		$("#downloadImgLink").click(function(){
+			save();
+			$('#downloadImgLink').attr('href', savCanvas.toDataURL());
+		});
+
+		$("#exportDataLink").click(function(){
+			// alert($("#table").html());
+			var uri = $("#table").toCSV();
+			$("#exportDataLink").attr("href", uri);
+		});
     });
-	
 
 	function draw() {
 		// alert("Draw");
@@ -181,12 +175,16 @@ $(document).ready(function(){
 					"<th> Distance </th>"+
 				"</tr>"+
 				"</table>");
+            // $("#downloadImgLink").hide();
+
             //Can replace the input file box with a fresh input. Must add the change listener back
-            // $("#imageLoader").replaceWith("<input type='file' id='imageLoader' name='imageLoader' style='position:absolute;top:25%'/>");
+            $("#imageLoader").replaceWith("<input type='file' id='imageLoader' name='imageLoader' style='position:absolute;top:25%'/>");
+            addImageLoaderListener();
             storedLines.length = 0;
             redrawStoredLines();
             // $("#canvasImg")[0].style.display = "none";
             $("#canvasImg").hide();
+            // $("#clr").hide();
         }
 	}
 
@@ -215,15 +213,24 @@ $(document).ready(function(){
         // alert("finished drawing!");
 
         var dataURL = savCan[0].toDataURL();
+        return dataURL;
 
-        $("#canvasImg").css({
-            "border-width": "2px",
-            "border-style": "solid"
-        });
-        $("#canvasImg").attr("src", dataURL);
-        $("#canvasImg").show();
+        // $("#canvasImg").css({
+        //     "border-width": "2px",
+        //     "border-style": "solid"
+        // });
+        // $("#canvasImg").attr("src", dataURL);
+        // $("#canvasImg").show();
     }
 
+	function undo() {
+		storedLines.pop();
+		var tr = $(this).closest('tr');
+		tr.remove();
+		redrawStoredLines();
+		drawTable();
+	}
+	
 	function findxy(res, e) {
 		// alert("findxy");
 		if (res == 'down') {
@@ -257,15 +264,18 @@ $(document).ready(function(){
 				x2: currX,
 				y2: currY,
 				dist: distance*calVal,
-				calDist: distance
+				calDist: distance,
+				xColor: x,
+				yColor: y,
 			});
 			
 			redrawStoredLines();
-			
-			$('table').append("<tr><td>" + prevX + "</td>" + 
-			"<td>" + prevY + "</td><td>" + currX + "</td><td>" +
-			currY + "</td><td>" + distance + "</td></tr>");
-			
+			drawTable();
+
+			// $('table').append("<tr><td>" + prevx + "</td>" + 
+			// "<td>" + prevy + "</td><td>" + currx + "</td><td>" +
+			// curry + "</td><td>" + distance + "</td></tr>");
+		
 			//draw();
 			// alert("up");
 		}
@@ -282,6 +292,29 @@ $(document).ready(function(){
 		}
 	}
 	
+	function drawTable() {
+		$('table').replaceWith(
+			"<table id='table' width='400' style='border:3px solid;position:absolute; top: 30%; left: 70%'>" +
+				"<tr>"+
+					"<th> Start X </th>" +
+					"<th> Start Y </th>" +
+					"<th> End X </th>" +
+					"<th> End Y </th>" +
+					"<th> Distance </th>" +
+				"</tr>" +
+			"</table>");
+			
+		for (var i = 0; i < storedLines.length; i++) {
+			$('table').append(
+				"<tr><td>" + storedLines[i].x1 + 
+				"</td><td>" + storedLines[i].y1 +
+				"</td><td>" + storedLines[i].x2 + 
+				"</td><td>" + storedLines[i].y2 +
+				"</td><td>" + storedLines[i].calDist +
+				"</td></tr>");
+		}
+	}
+	
 	function redrawStoredLines() {
 		ctx.clearRect(0, 0, canvas[0].width, canvas[0].height);
 
@@ -294,6 +327,8 @@ $(document).ready(function(){
 			ctx.beginPath();
 			ctx.moveTo(storedLines[i].x1, storedLines[i].y1);
 			ctx.lineTo(storedLines[i].x2, storedLines[i].y2);
+			ctx.strokeStyle = storedLines[i].xColor;
+			ctx.lineWidth = storedLines[i].yColor;
 			ctx.stroke();
 		}
 	}
@@ -313,4 +348,98 @@ $(document).ready(function(){
 		
 		
 	}
+
+	function addImageLoaderListener(){
+		var imageLoader = $('#imageLoader');
+        imageLoader.change(function(e){
+            // alert("changed");
+            var reader = new FileReader();
+            // alert("reader readyyy");
+            reader.onload = function(event){
+                // alert("reader ready");
+                var img = new Image();
+                img.onload = function(){
+                	var MAX_WIDTH = 800;
+					var MAX_HEIGHT = 600;
+                    canvas.show();
+                    imageCanvas.show();
+                    $("#downloadImgLink").show();
+                    $("#clr").show();
+
+                    w = img.width;
+                    h = img.height;
+
+                    // alert("old width: " + w);
+                    var wFactor = 1,
+                    hFactor = 1;
+
+					if (w > h) {
+					  if (w > MAX_WIDTH) {
+					  	hFactor = MAX_WIDTH / w
+					    h *= MAX_WIDTH / w;
+					    w = MAX_WIDTH;
+					  }
+					} else {
+					  if (h > MAX_HEIGHT) {
+					  	wFactor = MAX_HEIGHT / h;
+					    w *= MAX_HEIGHT / h;
+					    h = MAX_HEIGHT;
+					  }
+					}
+					// alert("new width: " + w);
+					canvas[0].width = w;
+                    canvas[0].height = h;
+                    imageCanvas[0].width = w;
+                    imageCanvas[0].height = h;
+                    
+     				// canvas.css({
+     				// 	"width": wFactor*80+"%",
+     				// 	"height": hFactor*60+"%"
+     				// });
+
+     				// imageCanvas.css({
+     				// 	"width": wFactor*80+"%",
+     				// 	"height": hFactor*60+"%"
+     				// });
+
+                     // alert("imageCanvas.width" + imageCanvas.width)
+                    imageCtx.drawImage(img,0,0, w, h);
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(e.target.files[0]);
+        });
+	}
+
+	jQuery.fn.toCSV = function() {
+	  var data = $(this).first(); //Only one table
+	  var csvData = [];
+	  var tmpArr = [];
+	  var tmpStr = '';
+	  data.find("tr").each(function() {
+	      if($(this).find("th").length) {
+	          $(this).find("th").each(function() {
+	            tmpStr = $(this).text().replace(/"/g, '""');
+	            tmpArr.push('"' + tmpStr + '"');
+	          });
+	          csvData.push(tmpArr);
+	      } else {
+	          tmpArr = [];
+	             $(this).find("td").each(function() {
+	                  if($(this).text().match(/^-{0,1}\d*\.{0,1}\d+$/)) {
+	                      tmpArr.push(parseFloat($(this).text()));
+	                  } else {
+	                      tmpStr = $(this).text().replace(/"/g, '""');
+	                      tmpArr.push('"' + tmpStr + '"');
+	                  }
+	             });
+	          csvData.push(tmpArr.join(','));
+	      }
+	  });
+	  var output = csvData.join('\n');
+	  var uri = 'data:application/csv;charset=UTF-8,' + encodeURIComponent(output);
+	  return uri;
+	  // window.open(uri);
+	}
+
 });

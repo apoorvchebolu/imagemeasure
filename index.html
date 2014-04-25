@@ -1,359 +1,54 @@
-<!DOCTYPE html>
-
 <html>
-
 <head>
-
-    <title>Electronics Sale</title>
-    
-<script type="text/javascript" src="jquery.js"></script>
-   
-
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-
-<link href="style.css" rel="stylesheet">
-        
-    </script>
-    
+	<script type="text/javascript" src="js/jquery-2.0.2.min.js"></script>
+	<script type="text/javascript" src ="js/measure.js"></script>
 </head>
-
-<head>
-    <script type="text/javascript" src="js/jquery-2.0.2.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-
-            var canvas, ctx, flag = false,
-                prevX = 0,
-                currX = 0,
-                prevY = 0,
-                currY = 0,
-                dot_flag = false;
-            var overlapCanvas, overlapCtx;
-
-            var x = "black",
-                y = 2;
-
-            var storedLines = [];
-
-            // init();
-
-            $(function() {
-                // alert("init");
-                canvas = $('#can');
-                ctx = canvas[0].getContext("2d");
-                overlapCanvas = $('#imageCanvas');
-                overlapCtx = overlapCanvas[0].getContext('2d');
-                canvas.hide();
-                overlapCanvas.hide();
-                // alert("width: " + w);
-
-
-                canvas.mousedown(function(e){
-                    // alert("down");
-
-                    findxy('down', e);
-                    
-                });
-
-                canvas.mousemove(function(e){
-                    // alert("move");
-                    findxy('move', e);
-                });
-
-                canvas.mouseup(function(e){
-                    // alert("up");
-                    findxy('up', e);
-                });
-
-                canvas.mouseout(function(e){
-                    // alert("out");
-                    findxy('out', e);
-                });
-
-                $('#clr').click(function(e){
-                    erase();
-                });
-                $('#sav').click(function(e){
-                    save();
-                });
-
-                
-                var imageLoader = $('#imageLoader');
-                imageLoader.change(function(e){
-                    // alert("changed");
-                    var reader = new FileReader();
-                    // alert("reader readyyy");
-                    reader.onload = function(event){
-                        // alert("reader ready");
-                        var img = new Image();
-                        img.onload = function(){
-                            canvas.show();
-                            overlapCanvas.show();
-                            canvas[0].width = img.width;
-                             // alert("img width: " + canvas.width);
-                            canvas[0].height = img.height;
-                            overlapCanvas[0].width = img.width;
-                            overlapCanvas[0].height = img.height;
-                            w = canvas[0].width;
-                            h = canvas[0].height;
-                             // alert("overlapCanvas.width" + overlapCanvas.width)
-                            overlapCtx.drawImage(img,0,0);
-                        }
-                        img.src = event.target.result;
-                    }
-                    reader.readAsDataURL(e.target.files[0]);
-                });
-            });
-
-               
-
-            function draw() {
-                // alert("Draw");
-                ctx.beginPath();
-                // alert("Draw works");
-                ctx.moveTo(prevX, prevY);
-                ctx.lineTo(currX, currY);
-                ctx.strokeStyle = x;
-                ctx.lineWidth = y;
-                ctx.stroke();
-                ctx.closePath();
-            }
-
-            function erase() {
-                var m = confirm("Do you want to clear?");
-                if (m) {
-                    ctx.clearRect(0, 0, w, h);
-                    overlapCtx.clearRect(0,0,w,h);
-                    canvas.hide();
-                    overlapCanvas.hide();
-                    storedLines.length = 0;
-                    redrawStoredLines();
-                    // $("#canvasImg")[0].style.display = "none";
-                    $("#canvasImg").hide();
-                }
-            }
-
-            function save() {
-                // var dataURL = canvas[0].toDataURL();
-                // $("#canvasImg").css({
-                //     "border-width": "2px",
-                //     "border-style": "solid"
-                // });
-                // $("#canvasImg").attr("src", dataURL);
-                // $("#canvasImg").show();
-
-                var drawingImg = new Image();
-                drawingImg.src = canvas[0].toDataURL();
-                var picImg = new Image();
-                picImg.src = overlapCanvas[0].toDataURL();
-
-                var savCan = $("#savCanvas");
-                var savCtx = savCan[0].getContext("2d");
-                savCan[0].width = canvas[0].width;
-                savCan[0].height = canvas[0].height;
-
-                savCtx.drawImage(picImg, 0, 0);
-                savCtx.drawImage(drawingImg, 0, 0);
-                savCan.hide();
-                // alert("finished drawing!");
-
-                var dataURL = savCan[0].toDataURL();
-
-                $("#canvasImg").css({
-                    "border-width": "2px",
-                    "border-style": "solid"
-                });
-                $("#canvasImg").attr("src", dataURL);
-                $("#canvasImg").show();
-            }
-
-            function findxy(res, e) {
-                // alert("findxy");
-                if (res == 'down') {
-                    currX = e.pageX - canvas.offset().left;
-                    currY = e.pageY - canvas.offset().top;
-                    prevX = currX;
-                    prevY = currY;
-                    
-                    // alert("currx: "+currX);
-
-                    flag = true;
-                    dot_flag = true;
-                    if (dot_flag) {
-                        ctx.beginPath();
-                        ctx.fillStyle = x;
-                        ctx.fillRect(currX, currY, 2, 2);
-                        ctx.closePath();
-                        dot_flag = false;
-                    }
-                }
-
-                if (res == 'up') {
-                    // alert("up");
-                    flag = false;
-                    currX = e.pageX - canvas.offset().left;
-                    currY = e.pageY - canvas.offset().top;
-                    storedLines.push({
-                        x1: prevX,
-                        y1: prevY,
-                        x2: currX,
-                        y2: currY
-                    });
-                    
-                    redrawStoredLines();
-                    //draw();
-                    // alert("up");
-                }
-                if (res == 'move') {
-                    // alert("moving");
-                    
-                    if (!flag) {
-                        return;
-                    }
-                    
-                    redrawStoredLines();
-                    
-                    currX = e.pageX - canvas.offset().left;
-                    currY = e.pageY - canvas.offset().top;
-                    
-                    //ctx.beginPath();
-                    //ctx.moveTo(prevX, prevY);
-                    //ctx.lineTo(startX, startY);
-                    //ctx.stroke();
-                    
-                    draw();
-                    // prevX = currX;
-                    // prevY = currY;
-                    
-                    // draw();
-                
-                }
-            }
-            
-            function redrawStoredLines() {
-                ctx.clearRect(0, 0, canvas[0].width, canvas[0].height);
-
-                if (storedLines.length == 0) {
-                    return;
-                }
-
-                // redraw each stored line
-                for (var i = 0; i < storedLines.length; i++) {
-                    ctx.beginPath();
-                    ctx.moveTo(storedLines[i].x1, storedLines[i].y1);
-                    ctx.lineTo(storedLines[i].x2, storedLines[i].y2);
-                    ctx.stroke();
-                }
-            }
-        });
-    </script>
-</head>
-
 
 <body>
+	<div id = "page_header">
+	    <div class="page-header">
+	        <h1>Image Measure</h1>
+	        <body> Ranjana Addanki, Apoorv Chebolu, Stephen Huang, Manan Shah </body>
+	    </div>
+	</div>
 
-<div id = "page_header">
-    <div class="page-header">
-        <h1>Image Measure</h1>
-        <body> Ranjana Addanki, Apoorv Chebolu, Stephen Huang, Manan Shah </body>
-    </div>
-</div>
+	<br></br>
 
-<br></br>
+	<label>Image File:</label><br/>
+	<input type="file" id="imageLoader" name="imageLoader" style="position:absolute;top:25%"/>
 
-<label>Image File:</label><br/>
-<input type="file" id="imageLoader" name="imageLoader"/>
-<canvas id="imageCanvas" style="position:absolute;top:10%;left:10%;border:2px solid; z-index: 0"></canvas>
+	<div style="position:absolute;top:19%;left:25%;">Choose Color</div>
+    <div style="position:absolute;top:23%;left:27%;width:10px;height:10px;background:green;" id="green"></div>
+    <div style="position:absolute;top:23%;left:28%;width:10px;height:10px;background:blue;" id="blue"></div>
+    <div style="position:absolute;top:23%;left:29%;width:10px;height:10px;background:red;" id="red" onclick="color(this)"></div>
+    <div style="position:absolute;top:25%;left:27%;width:10px;height:10px;background:yellow;" id="yellow" onclick="color(this)"></div>
+    <div style="position:absolute;top:25%;left:28%;width:10px;height:10px;background:orange;" id="orange" onclick="color(this)"></div>
+    <div style="position:absolute;top:25%;left:29%;width:10px;height:10px;background:black;" id="black" onclick="color(this)"></div>
+ 
 
-<canvas id="can" style="position:absolute;top:10%;left:10%;border:2px solid; z-index: 1"></canvas>
-<img id="canvasImg" style="position:absolute;top:10%;left:52%;" style="display:none;">
-<canvas id="savCanvas" style="position:absolute;top:10%;left:52%;" style="display:none;"></canvas>
-<input type="button" value="save" id="sav" size="30" onclick="save()" style="position:absolute;top:55%;left:10%; z-index: 2">
-<input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:55%;left:15%; z-index: 2">
-
-<!-- <div class="container" style="max-width: 800px; max-height: 600px; border: solid black">
-<img id="scream" class="profile-pic" src="http://cdn.cutestpaw.com/wp-content/uploads/2012/07/l-Wittle-puppy-yawning.jpg" />
-<div class="upload-button">Upload Image</div>
-<input class="file-upload" type="file" accept="image/*"/>
-</div>
- -->
-</body>
-
-<!-- <body>
-    <canvas id="can" width="400" height="400" style="position:absolute;top:10%;left:10%;border:2px solid;"></canvas>
+	<canvas id="imageCanvas" style="position:absolute;top:30%;border:2px solid; z-index: 0"></canvas>
+	<canvas id="can" style="position:absolute;top:30%; border:2px solid; z-index: 1"></canvas>
     <img id="canvasImg" style="position:absolute;top:10%;left:52%;" style="display:none;">
-    <input type="button" value="save" id="sav" size="30" onclick="save()" style="position:absolute;top:55%;left:10%;">
-    <input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:55%;left:15%;">
-</body> -->
+	<canvas id="savCanvas" style="position:absolute;top:10%;left:52%;" style="display:none;"></canvas>
+    <!-- <input type="button" value="save" id="sav" size="30" onclick="save()" > -->
+	<a id="downloadImgLink" download="MyImage.png" href="#" target="_blank" style="position:absolute;top:25%;left:70%;">download</a>
 
-
-<!--<script>
-
-var canvas = document.getElementById("can"),
-    ctx = canvas.getContext("2d");
-var img=document.getElementById("scream");
-ctx.drawImage(img,10,10);
-
-</script>-->
-
-<!--<script>
-
-$(document).ready(function() {   
-    var readURL = function(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                $('.profile-pic').attr('src', e.target.result);
-            }
-    
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-    
-
-    $(".file-upload").on('change', function(){
-        readURL(this);
-    });
-    
-    $(".upload-button").on('click', function() {
-       $(".file-upload").click();
-    });
-});
-
-</script>-->
-
-<!--<script>
-
-var imageLoader = document.getElementById('imageLoader');
-    imageLoader.addEventListener('change', handleImage, false);
-var canvas = document.getElementById('imageCanvas');
-var overlapCanvas = document.getElementById('can');
-
-var ctx = canvas.getContext('2d');
-var ctx2 = overlapCanvas.getContext('2d');
-
-
-function handleImage(e){
-    var reader = new FileReader();
-    reader.onload = function(event){
-        var img = new Image();
-        img.onload = function(){
-            canvas.width = img.width;
-            canvas.height = img.height;
-            overlapCanvas.width = img.width;
-            overlapCanvas.height = img.height;
-
-            ctx.drawImage(img,0,0);
-            ctx2.drawImage(ctx,0,0);
-
-        }
-        img.src = event.target.result;
-    }
-    reader.readAsDataURL(e.target.files[0]);     
-}
-</script>-->
+	<input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:25%;left:75%;">
+	<input type="button" value="undo" id="undo" size="30" onclick="undo()" style="position:absolute;top:25%;left:80%;">
+		<input type="button" value="calibrate" id="cal" size="23" onclick="calibrate()" style="position:absolute;top:25%;left:90%;">
+	<input type='text' id='textbox1' name='textbox1' />
+	<a id="exportDataLink" download="data.csv" href="#" target="_blank" style="position:absolute;top:25%;left:85%;">export</a>
+	<p>
+	<table id="table" width="400" style="border:3px solid;position:absolute; top: 30%; left: 70%">
+	<tr>
+		<th> Start X </th>
+		<th> Start Y </th>
+		<th> End X </th>
+		<th> End Y </th>
+		<th> Distance </th>
+	</tr>
+	</table>
+	</p>
+</body>
 
 </html>
