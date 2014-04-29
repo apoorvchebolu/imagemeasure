@@ -12,6 +12,8 @@ $(document).ready(function(){
 
 	var storedLines = [];
 	var calVal = 1;
+	var ratio = 1;
+	var linepixel = 1;
 	// init();
 
 	$(function() {
@@ -121,37 +123,41 @@ $(document).ready(function(){
 		// alert("Draw works");
 		ctx.moveTo(prevX, prevY);
 		ctx.lineTo(currX, currY);
-		ctx.strokeStyle = x;
+		ctx.strokeStyle = $('#color').val();
 		ctx.lineWidth = y;
 		ctx.stroke();
 		ctx.closePath();
 	}
 	function calibrate(){
+		alert($('#units').val())
 		var m = confirm("Do you want to Calibrate?");
 		if (storedLines.length == 0) {
 			alert("No line Drawn");
 		}else{
-			var linepixel = storedLines[storedLines.length - 1].dist;
-			var ratio = linepixel/$('#textbox1').val();
+			linepixel = storedLines[storedLines.length - 1].dist;
+			ratio = linepixel/$('#textbox1').val();
 			calVal = $('#textbox1').val();
-			 $('table').replaceWith("<table id='table' width='400' style='border:3px solid;position:absolute; top: 30%; left: 70%'>"+
+			 $('table').replaceWith("<table class='CSSTableGenerator' id='table' style='border:3px solid;position:absolute; top: 23%; left: 20%;  width: 40%; margin-left: 700px'>" +
 				"<tr>"+
-					"<th> Start X </th>"+
-					"<th> Start Y </th>"+
-					"<th> End X </th>"+
-					"<th> End Y </th>"+
-					"<th> Distance </th>"+
-				"</tr>"+
-				"</table>");
+					"<th> Start X </th>" +
+					"<th> Start Y </th>" +
+					"<th> End X </th>" +
+					"<th> End Y </th>" +
+					"<th> Distance </th>" +
+				"</tr>" +
+			"</table>");
 			 
 			
 			 for (var i=0;i<storedLines.length;i++)
 				{
-				alert( storedLines[i].dist);
-				storedLines[i].calDist = storedLines[i].dist/$('#textbox1').val();
-				$('table').append("<tr><td>" + storedLines[i].x1 + "</td>" + 
-				"<td>" + storedLines[i].y1 + "</td><td>" + storedLines[i].x2 + "</td><td>" +
-				storedLines[i].y2 + "</td><td>" + storedLines[i].calDist + "</td></tr>");
+				storedLines[i].calDist = storedLines[i].dist/ratio;
+				$('table').append(
+				"<tr><td><font color='" + storedLines[i].xColor + "'>" + storedLines[i].x1 + "</font>" + 
+				"</td><td><font color='" + storedLines[i].xColor + "'>" + storedLines[i].y1 + "</font>" + 
+				"</td><td><font color='" + storedLines[i].xColor + "'>" + storedLines[i].x2 + "</font>" + 
+				"</td><td><font color='" + storedLines[i].xColor + "'>" + storedLines[i].xy + "</font>" + 
+				"</td><td><font color='" + storedLines[i].xColor + "'>"+ storedLines[i].calDist + " " + $('#units').val()+ "</font>"+ 
+				"</td></tr>");
 				}
 				
 			
@@ -166,15 +172,15 @@ $(document).ready(function(){
             imageCtx.clearRect(0,0,w,h);
             canvas.hide();
             imageCanvas.hide();
-            $('table').replaceWith("<table id='table' width='400' style='border:3px solid;position:absolute; top: 30%; left: 70%'>"+
+            $('table').replaceWith("<table class='CSSTableGenerator' id='table' style='border:3px solid;position:absolute; top: 23%; left: 20%;  width: 40%; margin-left: 700px'>" +
 				"<tr>"+
-					"<th> Start X </th>"+
-					"<th> Start Y </th>"+
-					"<th> End X </th>"+
-					"<th> End Y </th>"+
-					"<th> Distance </th>"+
-				"</tr>"+
-				"</table>");
+					"<th> Start X </th>" +
+					"<th> Start Y </th>" +
+					"<th> End X </th>" +
+					"<th> End Y </th>" +
+					"<th> Distance </th>" +
+				"</tr>" +
+			"</table>");
             // $("#downloadImgLink").hide();
 
             //Can replace the input file box with a fresh input. Must add the change listener back
@@ -257,15 +263,15 @@ $(document).ready(function(){
 			flag = false;
 			currX = e.pageX - canvas.offset().left;
 			currY = e.pageY - canvas.offset().top;
-			distance = lineDistance(currX, currY, prevX, prevY, calVal);
+			distance = lineDistance(currX, currY, prevX, prevY, ratio);
 			storedLines.push({
 				x1: prevX,
 				y1: prevY,
 				x2: currX,
 				y2: currY,
-				dist: distance*calVal,
+				dist: distance*ratio,
 				calDist: distance,
-				xColor: x,
+				xColor: $('#color').val(),
 				yColor: y,
 			});
 			
@@ -294,7 +300,7 @@ $(document).ready(function(){
 	
 	function drawTable() {
 		$('table').replaceWith(
-			"<table id='table' width='400' style='border:3px solid;position:absolute; top: 30%; left: 70%'>" +
+			"<table class='CSSTableGenerator' id='table' style='border:3px solid;position:absolute; top: 23%; left: 20%;  width: 40%; margin-left: 700px'>" +
 				"<tr>"+
 					"<th> Start X </th>" +
 					"<th> Start Y </th>" +
@@ -306,11 +312,11 @@ $(document).ready(function(){
 			
 		for (var i = 0; i < storedLines.length; i++) {
 			$('table').append(
-				"<tr><td>" + storedLines[i].x1 + 
-				"</td><td>" + storedLines[i].y1 +
-				"</td><td>" + storedLines[i].x2 + 
-				"</td><td>" + storedLines[i].y2 +
-				"</td><td>" + storedLines[i].calDist +
+				"<tr><td><font color='" + storedLines[i].xColor + "'>" + storedLines[i].x1 + "</font>" + 
+				"</td><td><font color='" + storedLines[i].xColor + "'>" + storedLines[i].y1 + "</font>" + 
+				"</td><td><font color='" + storedLines[i].xColor + "'>" + storedLines[i].x2 + "</font>" + 
+				"</td><td><font color='" + storedLines[i].xColor + "'>" + storedLines[i].y2 + "</font>" + 
+				"</td><td><font color='" + storedLines[i].xColor + "'>"+ storedLines[i].calDist + " " + $('#units').val()+ "</font>"+ 
 				"</td></tr>");
 		}
 	}
@@ -333,7 +339,7 @@ $(document).ready(function(){
 		}
 	}
 	
-	function lineDistance(x1, y1, x2, y2, calVal) {
+	function lineDistance(x1, y1, x2, y2, ratio) {
 		
 		var xs = 0;
 		var ys = 0;
@@ -344,7 +350,7 @@ $(document).ready(function(){
 			ys = y2 - y1;
 			ys = ys * ys;
 
-			return Math.sqrt( xs + ys )/calVal;
+			return Math.sqrt( xs + ys )/ratio;
 		
 		
 	}
