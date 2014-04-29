@@ -373,6 +373,7 @@ $(document).ready(function(){
                 img.onload = function(){
                 	// alert()
                 	var MAX_WIDTH = $("#canvasDiv").width();
+                	// var MAX_WIDTH=800;
 					var MAX_HEIGHT = 600;
                     canvas.show();
                     imageCanvas.show();
