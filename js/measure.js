@@ -135,25 +135,27 @@ $(document).ready(function(){
 			}else{
 				rulerLength = storedLines[storedLines.length - 1].dist;
 				// var ratio = linepixel/$('#textbox1').val();
-				calVal = $('#textbox1').val();
-				 $('table').replaceWith("<table id='table' width='400' style='border:3px solid;position:absolute; top: 30%; left: 70%'>"+
+				var strTmp = $('#textbox1').val().split(" ");
+				calVal = strTmp[0];
+				 $('table').replaceWith("<table id='table' class='table table-bordered table-condensed' >"+
 					"<tr>"+
-						"<th> Start X </th>"+
-						"<th> Start Y </th>"+
-						"<th> End X </th>"+
-						"<th> End Y </th>"+
-						"<th> Distance </th>"+
+//						"<th> Start X </th>"+
+						// "<th> Start Y </th>"+
+						// "<th> End X </th>"+
+						// "<th> End Y </th>"+
+						"<th> Distance (" + strTmp[1]+") </th>"+
 					"</tr>"+
 					"</table>");
 				 
 				
 				 for (var i=0;i<storedLines.length;i++)
 					{
-					alert( storedLines[i].dist);
+					// alert( storedLines[i].dist);
 					storedLines[i].calDist = calVal/rulerLength*storedLines[i].dist;
-					$('table').append("<tr><td>" + storedLines[i].x1 + "</td>" + 
-					"<td>" + storedLines[i].y1 + "</td><td>" + storedLines[i].x2 + "</td><td>" +
-					storedLines[i].y2 + "</td><td>" + storedLines[i].calDist + "</td></tr>");
+					// $('table').append("<tr><td>" + storedLines[i].x1 + "</td>" + 
+					// "<td>" + storedLines[i].y1 + "</td><td>" + storedLines[i].x2 + "</td><td>" +
+					// storedLines[i].y2 + "</td><td>" + storedLines[i].calDist + "</td></tr>");
+				$('table').append("<tr><td>" + storedLines[i].calDist + "</td></tr>");
 					}
 					
 				
@@ -169,12 +171,12 @@ $(document).ready(function(){
             imageCtx.clearRect(0,0,w,h);
             canvas.hide();
             imageCanvas.hide();
-            $('table').replaceWith("<table id='table' width='400' style='border:3px solid;position:absolute; top: 30%; left: 70%'>"+
+            $('table').replaceWith("<table id='table' class='table table-bordered table-condensed' >"+
 				"<tr>"+
-					"<th> Start X </th>"+
-					"<th> Start Y </th>"+
-					"<th> End X </th>"+
-					"<th> End Y </th>"+
+					// "<th> Start X </th>"+
+					// "<th> Start Y </th>"+
+					// "<th> End X </th>"+
+					// "<th> End Y </th>"+
 					"<th> Distance </th>"+
 				"</tr>"+
 				"</table>");
@@ -296,26 +298,33 @@ $(document).ready(function(){
 	}
 	
 	function drawTable() {
-		$('table').replaceWith(
-			"<table id='table' width='400' style='border:3px solid;position:absolute; top: 30%; left: 70%'>" +
-				"<tr>"+
-					"<th> Start X </th>" +
-					"<th> Start Y </th>" +
-					"<th> End X </th>" +
-					"<th> End Y </th>" +
-					"<th> Distance </th>" +
-				"</tr>" +
-			"</table>");
+		// $('table').replaceWith(
+		// 	"<table id='table' class='table table-bordered table-condensed' >" +
+		// 		"<tr>"+
+		// 			// "<th> Start X </th>" +
+		// 			// "<th> Start Y </th>" +
+		// 			// "<th> End X </th>" +
+		// 			// "<th> End Y </th>" +
+		// 			"<th> Distance </th>" +
+		// 		"</tr>" +
+		// 	"</table>");
 			
-		for (var i = 0; i < storedLines.length; i++) {
-			$('table').append(
-				"<tr><td>" + storedLines[i].x1 + 
-				"</td><td>" + storedLines[i].y1 +
-				"</td><td>" + storedLines[i].x2 + 
-				"</td><td>" + storedLines[i].y2 +
-				"</td><td>" + storedLines[i].calDist +
-				"</td></tr>");
-		}
+		// for (var i = 0; i < storedLines.length; i++) {
+		// 	$('table').append(
+		// 		"<tr>"+
+		// 		// "<td>" + storedLines[i].x1 + 
+		// 		// "</td><td>" + storedLines[i].y1 +
+		// 		// "</td><td>" + storedLines[i].x2 + 
+		// 		// "</td><td>" + storedLines[i].y2 +
+		// 		// "</td>"+
+		// 		"<td>" + storedLines[i].calDist +
+		// 		"</td></tr>");
+		// }
+
+		$('table').append(
+			"<tr>"+
+			"<td>" + storedLines[storedLines.length-1].calDist +
+			"</td></tr>");
 	}
 	
 	function redrawStoredLines() {
@@ -362,7 +371,8 @@ $(document).ready(function(){
                 // alert("reader ready");
                 var img = new Image();
                 img.onload = function(){
-                	var MAX_WIDTH = 800;
+                	// alert()
+                	var MAX_WIDTH = $("#canvasDiv").width();
 					var MAX_HEIGHT = 600;
                     canvas.show();
                     imageCanvas.show();
