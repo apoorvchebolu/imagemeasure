@@ -7,7 +7,6 @@ $(document).ready(function(){
 		dot_flag = false;
 	var imageCanvas, imageCtx;
 	var rulerLength=1;
-	var units="undefined";
 
 	var x = "black",
 		y = 2;
@@ -136,28 +135,25 @@ $(document).ready(function(){
 			}else{
 				rulerLength = storedLines[storedLines.length - 1].dist;
 				// var ratio = linepixel/$('#textbox1').val();
-				var strTmp = $('#textbox1').val().split(" ");
-				calVal = strTmp[0];
-				units = strTmp[1];
-				 $('#table').replaceWith("<table id='table' class='table table-bordered table-condensed' >"+
+				calVal = $('#textbox1').val();
+				 $('table').replaceWith("<table id='table' width='400' style='border:3px solid;position:absolute; top: 30%; left: 70%'>"+
 					"<tr>"+
-//						"<th> Start X </th>"+
-						// "<th> Start Y </th>"+
-						// "<th> End X </th>"+
-						// "<th> End Y </th>"+
-						"<th> Distance (" + units +") </th>"+
+						"<th> Start X </th>"+
+						"<th> Start Y </th>"+
+						"<th> End X </th>"+
+						"<th> End Y </th>"+
+						"<th> Distance </th>"+
 					"</tr>"+
 					"</table>");
 				 
 				
 				 for (var i=0;i<storedLines.length;i++)
 					{
-					// alert( storedLines[i].dist);
+					alert( storedLines[i].dist);
 					storedLines[i].calDist = calVal/rulerLength*storedLines[i].dist;
-					// $('table').append("<tr><td>" + storedLines[i].x1 + "</td>" + 
-					// "<td>" + storedLines[i].y1 + "</td><td>" + storedLines[i].x2 + "</td><td>" +
-					// storedLines[i].y2 + "</td><td>" + storedLines[i].calDist + "</td></tr>");
-				$('#table').append("<tr><td>" + storedLines[i].calDist + "</td></tr>");
+					$('table').append("<tr><td>" + storedLines[i].x1 + "</td>" + 
+					"<td>" + storedLines[i].y1 + "</td><td>" + storedLines[i].x2 + "</td><td>" +
+					storedLines[i].y2 + "</td><td>" + storedLines[i].calDist + "</td></tr>");
 					}
 					
 				
@@ -171,21 +167,18 @@ $(document).ready(function(){
         if (m) {
             ctx.clearRect(0, 0, w, h);
             imageCtx.clearRect(0,0,w,h);
-
             canvas.hide();
             imageCanvas.hide();
-
-            $('#table').replaceWith("<table id='table' class='table table-bordered table-condensed' >"+
+            $('table').replaceWith("<table id='table' width='400' style='border:3px solid;position:absolute; top: 30%; left: 70%'>"+
 				"<tr>"+
-					// "<th> Start X </th>"+
-					// "<th> Start Y </th>"+
-					// "<th> End X </th>"+
-					// "<th> End Y </th>"+
+					"<th> Start X </th>"+
+					"<th> Start Y </th>"+
+					"<th> End X </th>"+
+					"<th> End Y </th>"+
 					"<th> Distance </th>"+
 				"</tr>"+
 				"</table>");
             // $("#downloadImgLink").hide();
-
 
             //Can replace the input file box with a fresh input. Must add the change listener back
             $("#imageLoader").replaceWith("<input type='file' id='imageLoader' name='imageLoader' style='position:absolute;top:25%'/>");
@@ -194,7 +187,6 @@ $(document).ready(function(){
             redrawStoredLines();
             // $("#canvasImg")[0].style.display = "none";
             $("#canvasImg").hide();
-            $("#textbox1").val('');
             // $("#clr").hide();
         }
 	}
@@ -304,33 +296,26 @@ $(document).ready(function(){
 	}
 	
 	function drawTable() {
-		$('#table').replaceWith(
-			"<table id='table' class='table table-bordered table-condensed' >" +
+		$('table').replaceWith(
+			"<table id='table' width='400' style='border:3px solid;position:absolute; top: 30%; left: 70%'>" +
 				"<tr>"+
-					// "<th> Start X </th>" +
-					// "<th> Start Y </th>" +
-					// "<th> End X </th>" +
-					// "<th> End Y </th>" +
-					"<th> Distance (" + units +") </th>"+
+					"<th> Start X </th>" +
+					"<th> Start Y </th>" +
+					"<th> End X </th>" +
+					"<th> End Y </th>" +
+					"<th> Distance </th>" +
 				"</tr>" +
 			"</table>");
 			
 		for (var i = 0; i < storedLines.length; i++) {
-			$('#table').append(
-				"<tr>"+
-				// "<td>" + storedLines[i].x1 + 
-				// "</td><td>" + storedLines[i].y1 +
-				// "</td><td>" + storedLines[i].x2 + 
-				// "</td><td>" + storedLines[i].y2 +
-				// "</td>"+
-				"<td>" + storedLines[i].calDist +
+			$('table').append(
+				"<tr><td>" + storedLines[i].x1 + 
+				"</td><td>" + storedLines[i].y1 +
+				"</td><td>" + storedLines[i].x2 + 
+				"</td><td>" + storedLines[i].y2 +
+				"</td><td>" + storedLines[i].calDist +
 				"</td></tr>");
 		}
-
-		// $('table').append(
-		// 	"<tr>"+
-		// 	"<td>" + storedLines[storedLines.length-1].calDist +
-		// 	"</td></tr>");
 	}
 	
 	function redrawStoredLines() {
@@ -377,9 +362,7 @@ $(document).ready(function(){
                 // alert("reader ready");
                 var img = new Image();
                 img.onload = function(){
-                	// alert()
-                	var MAX_WIDTH = $("#canvasDiv").width();
-                	// var MAX_WIDTH=800;
+                	var MAX_WIDTH = 800;
 					var MAX_HEIGHT = 600;
                     canvas.show();
                     imageCanvas.show();
