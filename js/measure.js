@@ -9,7 +9,7 @@ $(document).ready(function(){
 	var rulerLength=1;
 	var units="undefined";
 
-	var x = "black",
+	var x = "yellow",
 		y = 2;
 
 	var storedLines = [];
@@ -51,6 +51,12 @@ $(document).ready(function(){
 		canvas.mouseout(function(e){
 			// alert("out");
 			findxy('out', e);
+		});
+
+		$("#textbox1").keypress(function(e) {
+		    if(e.which == 13) {
+		        calibrate();
+		    }
 		});
 
 		$('#clr').click(function(e){
@@ -106,14 +112,18 @@ $(document).ready(function(){
 		addImageLoaderListener();
 
 		$("#downloadImgLink").click(function(){
-			save();
-			$('#downloadImgLink').attr('href', savCanvas.toDataURL());
+			$('#downloadImgLink').attr('href', save());
+			var fileName = $('#imageLoader').val().split('/').pop().split('\\').pop().split('.')[0];
+			// alert(fileName);
+			$('#downloadImgLink').attr('download', fileName+"_measured.png");
 		});
 
 		$("#exportDataLink").click(function(){
 			// alert($("#table").html());
 			var uri = $("#table").toCSV();
 			$("#exportDataLink").attr("href", uri);
+			var fileName = $('#imageLoader').val().split('/').pop().split('\\').pop().split('.')[0];
+			$('#exportDataLink').attr('download', fileName+"_measured.csv");
 		});
     });
 
@@ -195,6 +205,8 @@ $(document).ready(function(){
             // $("#canvasImg")[0].style.display = "none";
             $("#canvasImg").hide();
             $("#textbox1").val('');
+            $('#downloadImgLink').attr('href', "#");
+            $("#exportDataLink").attr("href", "#");
             // $("#clr").hide();
         }
 	}
